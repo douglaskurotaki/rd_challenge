@@ -27,15 +27,6 @@ class CustomerSuccessBalancing
     calculate_quantity_served_customers_by_cs.sort_by { |cs| cs[:served_customers_quantity] }.reverse
   end
 
-  def customer_success_with_biggest_served_customers_quantity(customer_success_calculated)
-    customer_success_calculated.max_by { |cs| cs[:served_customers_quantity] }
-  end
-
-  def draw_between_quantity_served_customers?(customer_success_calculated)
-    customer_success_calculated[0][:served_customers_quantity] ==
-      customer_success_calculated[1][:served_customers_quantity]
-  end
-
   def calculate_quantity_served_customers_by_cs
     sorted_available_customer_success.reverse_each.map do |customer_success|
       { id: customer_success[:id], served_customers_quantity: served_customers_quantity(customer_success) }
@@ -55,12 +46,17 @@ class CustomerSuccessBalancing
     previous_customer_success[:score]
   end
 
-  def sorted_available_customer_success
-    @sorted_available_customer_success ||= available_customer_success.sort_by { |cs| cs[:score] }
+  def draw_between_quantity_served_customers?(customer_success_calculated)
+    customer_success_calculated[0][:served_customers_quantity] ==
+      customer_success_calculated[1][:served_customers_quantity]
   end
 
   def available_customer_success
     customer_success.reject { |cs| away_customer_success.include?(cs[:id]) }
+  end
+
+  def sorted_available_customer_success
+    @sorted_available_customer_success ||= available_customer_success.sort_by { |cs| cs[:score] }
   end
 end
 
